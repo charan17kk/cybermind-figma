@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Login Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { 
+            border: 1px solid #ccc; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin: 5px; 
+        }
+        input { 
+            width: 200px; 
+            padding: 8px; 
+            margin: 5px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+        }
+        .log { 
+            background: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+            padding: 10px; 
+            margin: 10px 0; 
+            font-family: monospace; 
+            white-space: pre-wrap; 
+            max-height: 300px; 
+            overflow-y: auto; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Frontend Login Debug Tool</h1>
+    
+    <div class="test-section info">
+        <h3>Environment Check</h3>
+        <p>Current URL: <span id="currentUrl"></span></p>
+        <p>User Agent: <span id="userAgent"></span></p>
+        <p>API Base URL: <span id="apiBaseUrl"></span></p>
+    </div>
+
+    <div class="test-section">
+        <h3>API Connection Test</h3>
+        <button onclick="testHealth()">Test Health API</button>
+        <button onclick="testJobs()">Test Jobs API</button>
+        <div id="connectionResult" class="log"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Login Test</h3>
+        <div>
+            <input type="email" id="email" placeholder="Email" value="vinay@gmail.com">
+            <input type="password" id="password" placeholder="Password" value="Vinay@123">
+        </div>
+        <button onclick="testDirectLogin()">Direct Login Test</button>
+        <button onclick="testFrontendLogin()">Frontend API Login Test</button>
+        <div id="loginResult" class="log"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Console Log</h3>
+        <button onclick="clearLog()">Clear Log</button>
+        <div id="consoleLog" class="log"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // Initialize environment info
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('userAgent').textContent = navigator.userAgent;
+        document.getElementById('apiBaseUrl').textContent = API_BASE_URL;
+        
+        function log(message, target = 'consoleLog') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById(target);
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${timestamp}] ${message}`);
+        }
+        
+        function clearLog() {
+            document.getElementById('consoleLog').textContent = '';
+            document.getElementById('connectionResult').textContent = '';
+            document.getElementById('loginResult').textContent = '';
+        }
+        
+        async function testHealth() {
+            try {
+                log('Testing health endpoint...', 'connectionResult');
+                const response = await fetch(`${API_BASE_URL}/health`);
+                log(`Health response status: ${response.status}`, 'connectionResult');
+                
+                const data = await response.json();
+                log(`Health response: ${JSON.stringify(data)}`, 'connectionResult');
+                
+                if (response.ok) {
+                    document.querySelector('.test-section:nth-child(2)').className = 'test-section success';
+                }
+            } catch (error) {
+                log(`Health test error: ${error.message}`, 'connectionResult');
+                document.querySelector('.test-section:nth-child(2)').className = 'test-section error';
+            }
+        }
+        
+        async function testJobs() {
+            try {
+                log('Testing jobs endpoint...', 'connectionResult');
+                const response = await fetch(`${API_BASE_URL}/jobs`);
+                log(`Jobs response status: ${response.status}`, 'connectionResult');
+                
+                const data = await response.json();
+                log(`Jobs found: ${data.data ? data.data.length : 0}`, 'connectionResult');
+            } catch (error) {
+                log(`Jobs test error: ${error.message}`, 'connectionResult');
+            }
+        }
+        
+        async function testDirectLogin() {
+            try {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                log(`Testing direct login for ${email}...`, 'loginResult');
+                
+                const response = await fetch(`${API_BASE_URL}/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                log(`Login response status: ${response.status}`, 'loginResult');
+                log(`Login response ok: ${response.ok}`, 'loginResult');
+                
+                const data = await response.json();
+                log(`Login response data: ${JSON.stringify(data, null, 2)}`, 'loginResult');
+                
+                if (data.success) {
+                    document.querySelector('.test-section:nth-child(3)').className = 'test-section success';
+                    log('✅ Direct login successful!', 'loginResult');
+                } else {
+                    document.querySelector('.test-section:nth-child(3)').className = 'test-section error';
+                    log('❌ Direct login failed!', 'loginResult');
+                }
+            } catch (error) {
+                log(`Direct login error: ${error.message}`, 'loginResult');
+                log(`Error stack: ${error.stack}`, 'loginResult');
+                document.querySelector('.test-section:nth-child(3)').className = 'test-section error';
+            }
+        }
+        
+        async function testFrontendLogin() {
+            try {
+                log('Testing frontend API module...', 'loginResult');
+                
+                // This will likely fail because we can't import TypeScript modules directly
+                // But it will help us understand the issue
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Simulate what the frontend API does
+                log('Simulating frontend API call...', 'loginResult');
+                
+                // Check if environment variable is available in browser
+                const envApiUrl = process?.env?.NEXT_PUBLIC_API_URL;
+                log(`Environment API URL: ${envApiUrl || 'undefined'}`, 'loginResult');
+                
+                // Use the same logic as frontend API
+                const apiBaseUrl = envApiUrl || 'http://localhost:5000/api';
+                log(`Using API base URL: ${apiBaseUrl}`, 'loginResult');
+                
+                const response = await fetch(`${apiBaseUrl}/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                log(`Frontend-style response status: ${response.status}`, 'loginResult');
+                
+                const data = await response.json();
+                log(`Frontend-style response: ${JSON.stringify(data, null, 2)}`, 'loginResult');
+                
+            } catch (error) {
+                log(`Frontend API test error: ${error.message}`, 'loginResult');
+                log(`This is expected since we can't import TypeScript modules directly`, 'loginResult');
+            }
+        }
+        
+        // Auto-run connection test on load
+        window.onload = () => {
+            log('Page loaded, running automatic tests...');
+            testHealth();
+        };
+        
+        // Capture all console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            log(`CONSOLE: ${args.join(' ')}`);
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            log(`ERROR: ${args.join(' ')}`);
+            originalError.apply(console, args);
+        };
+    </script>
+</body>
+</html>

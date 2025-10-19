@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Test Page</h1>
+    <button onclick="testHealth()">Test Health API</button>
+    <button onclick="testJobs()">Test Jobs API</button>
+    <button onclick="testLogin()">Test Login API</button>
+    <div id="results"></div>
+
+    <script>
+        async function testHealth() {
+            try {
+                console.log('Testing health API...');
+                const response = await fetch('http://localhost:5000/api/health');
+                const data = await response.json();
+                console.log('Health response:', data);
+                document.getElementById('results').innerHTML = '<h3>Health API:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                console.error('Health API error:', error);
+                document.getElementById('results').innerHTML = '<h3>Health API Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+
+        async function testJobs() {
+            try {
+                console.log('Testing jobs API...');
+                const response = await fetch('http://localhost:5000/api/jobs');
+                const data = await response.json();
+                console.log('Jobs response:', data);
+                document.getElementById('results').innerHTML = '<h3>Jobs API:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                console.error('Jobs API error:', error);
+                document.getElementById('results').innerHTML = '<h3>Jobs API Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+
+        async function testLogin() {
+            try {
+                console.log('Testing login API...');
+                const response = await fetch('http://localhost:5000/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'vinay@gmail.com',
+                        password: 'Vinay@123'
+                    })
+                });
+                const data = await response.json();
+                console.log('Login response:', data);
+                document.getElementById('results').innerHTML = '<h3>Login API:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                console.error('Login API error:', error);
+                document.getElementById('results').innerHTML = '<h3>Login API Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+    </script>
+</body>
+</html>

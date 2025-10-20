@@ -416,8 +416,8 @@ export function CreateJobModal({ isOpen, onClose, onJobCreated }: CreateJobModal
                   <SelectContent className="z-[120] bg-white shadow-xl border border-gray-200 max-h-60 overflow-y-auto rounded-lg" sideOffset={4}>
                     <div className="p-1">
                       <SelectItem className="py-2 px-3 text-sm rounded-md cursor-pointer hover:bg-gray-50" value="Internship">Internship</SelectItem>
-                      <SelectItem className="py-2 px-3 text-sm rounded-md cursor-pointer hover:bg-gray-50" value="Full Time">Full-time</SelectItem>
-                      <SelectItem className="py-2 px-3 text-sm rounded-md cursor-pointer hover:bg-gray-50" value="Partime">Part-time</SelectItem>
+                      <SelectItem className="py-2 px-3 text-sm rounded-md cursor-pointer hover:bg-gray-50" value="Full-time">Full-time</SelectItem>
+                      <SelectItem className="py-2 px-3 text-sm rounded-md cursor-pointer hover:bg-gray-50" value="Part-time">Part-time</SelectItem>
                       <SelectItem className="py-2 px-3 text-sm rounded-md cursor-pointer hover:bg-gray-50" value="Contract">Contract</SelectItem>
                       
                     </div>

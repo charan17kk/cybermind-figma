@@ -20,7 +20,12 @@ app.use(limiter);
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://cybermind-5acr.onrender.com', 'https://cybermind-bend.onrender.com'],
+  origin: [
+    'http://localhost:3000', 
+    'http://localhost:3001', 
+    'https://cybermind-lhew.onrender.com',
+    'https://cybermind-backend-e1e7.onrender.com'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
